@@ -2,8 +2,7 @@
 
 Un utilitaire simple et élégant pour planifier l'arrêt, le redémarrage ou la mise en veille prolongée de votre PC Windows.
 
-![Screenshot de QuickPower] 
-assets\image.png
+![Screenshot de QuickPower](assets/image.png)
 
 ## Fonctionnalités ✨
 
@@ -16,7 +15,8 @@ assets\image.png
 ## Comment Lancer (Développement) 🚀
 
 1.  **Prérequis :** Assurez-vous d'avoir [Node.js](https://nodejs.org/) installé.
-2.  **Cloner le dépôt :** ```bash
+2.  **Cloner le dépôt :** 
+    ```bash
     git clone [https://github.com/depot](https://github.com/depot)
     cd quick-power 
     ```
