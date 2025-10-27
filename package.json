@@ -11,10 +11,8 @@
   "keywords": [],
   "author": "Ton Nom Ici",
   "license": "ISC",
-  "dependencies": {
-    "electron": "^31.0.2"
-  },
   "devDependencies": {
+    "electron": "^31.0.2",
     "electron-builder": "^24.13.3"
   },
   "build": {
@@ -24,7 +22,7 @@
       "src/**/*"
     ],
     "win": {
-      "target": "nsis",
+      "target": "portable",
       "icon": "assets/icon.ico"
     }
   }

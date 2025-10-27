@@ -36,11 +36,13 @@ Un utilitaire simple et élégant pour planifier l'arrêt, le redémarrage ou la
     npm install
     ```
 2.  **Lancer le build :**
+
+    ⚠️ **Important pour Windows :** En raison de la création de liens symboliques par les outils de build, vous devez lancer cette commande depuis un terminal **exécuté en tant qu'administrateur**. Faites un clic droit sur votre terminal (ou sur VS Code) et choisissez "Exécuter en tant qu'administrateur".
+
     ```bash
     npm run dist
     ```
-3.  **Trouver les fichiers :** L'installateur (`.exe`) et la version portable (dans un sous-dossier) se trouveront dans le nouveau dossier `dist/`.
-
+3.  **Trouver les fichiers :** L'installateur (`.exe`) ou la version portable se trouveront dans le nouveau dossier `dist/`.
 ---
 
 Fait avec ❤️ et Electron.
