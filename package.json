@@ -1,0 +1,31 @@
+{
+  "name": "quick-power",
+  "productName": "QuickPower",
+  "version": "1.0.0",
+  "description": "Un utilitaire simple pour planifier l'arrêt du PC.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Ton Nom Ici",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^31.0.2"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.tonnom.quickpower",
+    "productName": "QuickPower",
+    "files": [
+      "src/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    }
+  }
+}

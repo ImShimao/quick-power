@@ -1,0 +1,13 @@
+# Dépendances Node.js
+/node_modules
+
+# Fichiers de build (ton .exe)
+/dist
+
+# Fichier de préférences utilisateur
+# (On ne veut pas sauvegarder le choix de thème des autres)
+settings.json
+
+# Fichiers système
+.DS_Store
+npm-debug.log

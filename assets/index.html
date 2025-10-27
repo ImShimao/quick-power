@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+    <title>Shutdown App</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <div class="container">
+        
+        <header class="titlebar">
+            <div class="drag-region"></div>
+            
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="theme-toggle">
+                    <input type="checkbox" id="theme-toggle" />
+                    <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </label>
+            </div>
+
+            <div class="window-controls">
+                <button id="minimize-btn" title="Minimiser">&ndash;</button>
+                <button id="close-btn" title="Fermer">&times;</button>
+            </div>
+        </header>
+
+        <main class="content">
+            <h2>Programmer l'arrêt :</h2>
+            
+            <div class="time-input-container" id="time-input-group">
+                <input type="number" id="time-value" value="30" min="1">
+                <select id="time-unit">
+                    <option value="minutes">Minutes</option>
+                    <option value="hours">Heures</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button id="validate-btn" class="validate">Valider</button>
+                <button id="cancel-btn" class="cancel">Annuler</button>
+            </div>
+
+            <p id="status">Aucun arrêt programmé.</p>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+
+</body>
+</html>
