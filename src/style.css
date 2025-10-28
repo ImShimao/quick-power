@@ -5,9 +5,9 @@
 /* --- Définition des variables --- */
 :root {
     --font-family: 'Inter', -apple-system, sans-serif;
-    
+
     /* Thème Clair */
-    --c-bg: #ffffff; /* Le fond de la carte */
+    --c-bg: #ffffff;
     --c-text-primary: #222;
     --c-text-secondary: #555;
     --c-border: #eaeaea;
@@ -15,15 +15,16 @@
     --c-icon-color: #555;
     --c-icon-color-hover: #000;
     --c-close-hover-bg: #e60000;
-    
+
     --c-primary: #007aff;
     --c-primary-hover: #005ec4;
     --c-danger: #e74c3c;
     --c-danger-hover: #c0392b;
     --c-success: #28a745;
+    --c-error: #dc3545; /* Nouvelle couleur pour les erreurs */
     --c-disabled-bg: #f0f0f0;
     --c-disabled-text: #b0b0b0;
-    
+
     --shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
     --transition: all 0.25s ease;
 }
@@ -39,34 +40,31 @@ body.dark {
     --c-icon-color-hover: #fff;
     --c-close-hover-bg: #e60000;
 
+    --c-error: #ff4d4f; /* Erreur en thème sombre */
     --c-disabled-bg: #3a3a3c;
     --c-disabled-text: #777;
-    
+
     --shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
 }
 
 
-/* --- Styles de base (Pour la fenêtre transparente) --- */
+/* --- Styles de base --- */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-
-/* IMPORTANT: On rend la page transparente */
 html, body {
     background: transparent;
     font-family: var(--font-family);
-    padding: 10px; /* Espace pour l'ombre portée */
+    padding: 10px; /* Espace pour l'ombre */
     height: 100vh;
     overflow: hidden;
 }
-
-/* Le conteneur est maintenant la "fenêtre" */
 .container {
     background: var(--c-bg);
     color: var(--c-text-primary);
-    border-radius: 20px; /* Nos coins arrondis ! */
+    border-radius: 20px;
     box-shadow: var(--shadow);
     height: 100%;
     display: flex;
@@ -75,38 +73,32 @@ html, body {
     transition: var(--transition);
 }
 
-
-/* --- NOUVELLE Barre de Titre --- */
+/* --- Barre de Titre --- */
 .titlebar {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Aligne les boutons à droite */
+    justify-content: flex-end;
     height: 48px;
     padding: 0 10px;
     flex-shrink: 0;
     position: relative;
 }
-
-/* Zone déplaçable (couvre tout le header) */
 .drag-region {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    -webkit-app-region: drag; /* Magie Electron: rend déplaçable */
+    -webkit-app-region: drag;
 }
-
-/* Wrapper pour les icônes (pour le 'no-drag') */
 .theme-switch-wrapper, .window-controls {
-    -webkit-app-region: no-drag; /* Magie Electron: rend cliquable */
+    -webkit-app-region: no-drag;
     display: flex;
     align-items: center;
     z-index: 10;
 }
 
-
-/* --- NOUVELLE Bascule de Thème (Soleil/Lune) --- */
+/* --- Bascule de Thème --- */
 .theme-switch {
     display: flex;
     align-items: center;
@@ -116,173 +108,114 @@ html, body {
     border-radius: 8px;
     cursor: pointer;
     transition: var(--transition);
+    margin-right: 5px; /* Espace avant les boutons fenêtre */
 }
-.theme-switch:hover {
-    background: var(--c-disabled-bg);
-}
+.theme-switch:hover { background: var(--c-disabled-bg); }
 .theme-switch input { display: none; }
-.theme-switch .icon {
-    color: var(--c-icon-color);
-    transition: var(--transition);
-}
-.theme-switch:hover .icon {
-    color: var(--c-icon-color-hover);
-}
-
-/* Logique d'affichage des icônes */
+.theme-switch .icon { color: var(--c-icon-color); transition: var(--transition); }
+.theme-switch:hover .icon { color: var(--c-icon-color-hover); }
 .icon-sun { display: none; }
 body.dark .icon-sun { display: block; }
 body.dark .icon-moon { display: none; }
-body.dark .theme-switch .icon-sun { color: #FFD60A; }
+body.dark .theme-switch .icon-sun { color: #FFD60A; } /* Couleur soleil */
 
-
-/* --- NOUVEAUX Contrôles de Fenêtre --- */
+/* --- Contrôles de Fenêtre --- */
 .window-controls button {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: 300;
-    line-height: 1;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    color: var(--c-icon-color);
-    cursor: pointer;
-    border-radius: 8px;
+    background: transparent; border: none; font-size: 1.5rem; font-weight: 300;
+    line-height: 1; width: 36px; height: 36px; padding: 0;
+    color: var(--c-icon-color); cursor: pointer; border-radius: 8px;
     transition: var(--transition);
 }
-.window-controls button:hover {
-    background: var(--c-disabled-bg);
-    color: var(--c-icon-color-hover);
-}
-#close-btn:hover {
-    background: var(--c-close-hover-bg);
-    color: white;
-}
-
+.window-controls button:hover { background: var(--c-disabled-bg); color: var(--c-icon-color-hover); }
+#close-btn:hover { background: var(--c-close-hover-bg); color: white; }
 
 /* --- Contenu de l'App --- */
 .content {
-    padding: 0 2.5rem 2.5rem; /* Espace en bas */
+    padding: 0 2.5rem 2.5rem;
     text-align: center;
     flex-grow: 1;
+    display: flex; /* Pour mieux centrer verticalement */
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu verticalement */
 }
-
 h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
+    font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem;
 }
 
-
-/* --- CORRECTION Sélecteur de Temps --- */
+/* --- Sélecteur de Temps --- */
 #time-input-group {
-    display: flex;
-    border: 2px solid var(--c-border);
-    border-radius: 14px;
-    overflow: hidden;
-    transition: var(--transition);
-    height: 54px;
+    display: flex; border: 2px solid var(--c-border); border-radius: 14px;
+    overflow: hidden; transition: var(--transition); height: 54px;
+    margin-bottom: 2rem; /* Espace avant les boutons */
 }
 #time-input-group:focus-within {
     border-color: var(--c-primary);
     box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
 }
-
 input[type="number"], select {
-    font-family: var(--font-family);
-    font-size: 1.1rem;
-    font-weight: 500;
-    background: var(--c-input-bg);
-    color: var(--c-text-primary);
-    border: none;
-    transition: var(--transition);
-    height: 100%;
+    font-family: var(--font-family); font-size: 1.1rem; font-weight: 500;
+    background: var(--c-input-bg); color: var(--c-text-primary);
+    border: none; transition: var(--transition); height: 100%;
 }
-input[type="number"]:focus, select:focus {
-    outline: none;
-}
-
-/* Input pour le nombre */
+input[type="number"]:focus, select:focus { outline: none; }
 input[type="number"] {
-    flex-grow: 1; /* Prend l'espace restant */
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 600;
+    flex-grow: 1; text-align: center; font-size: 1.3rem; font-weight: 600;
     color: var(--c-primary);
 }
 /* Cacher les flèches */
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-}
-input[type=number] {
-  -moz-appearance: textfield;
-}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; } /* Pour Firefox */
 
-/* Select pour l'unité (Minutes/Heures) */
 select {
-    flex-shrink: 0; /* Ne pas réduire */
-    width: 130px; /* <-- LA CORRECTION ! Largeur fixe */
-    border-left: 2px solid var(--c-border);
-    padding: 0 15px; /* Espace intérieur */
-    text-align: left; /* <-- LA CORRECTION ! Alignement */
-    cursor: pointer;
-    
-    /* Apparence (flèche) */
-    appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23' + var(--c-text-secondary).substring(1) + '" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    flex-shrink: 0; width: 130px; border-left: 2px solid var(--c-border);
+    padding: 0 15px; text-align: left; cursor: pointer;
+    appearance: none; /* Supprime le style par défaut */
+    -webkit-appearance: none; /* Pour Safari/Chrome */
+    -moz-appearance: none; /* Pour Firefox */
+
+    /* Flèche personnalisée ( SVG encodé en URL) */
+    /* Note: La couleur est difficile à gérer dynamiquement avec les variables CSS dans l'URL */
+    /* On met une couleur neutre (grisé) qui fonctionne sur clair et sombre */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23888888" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 1rem center;
+    background-size: 1em; /* Ajuste la taille de la flèche */
 }
-
 
 /* --- Boutons et Statut --- */
-.button-group {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 2rem;
-}
+.button-group { display: flex; gap: 0.75rem; margin-top: 0; } /* Retiré margin-top */
 button {
-    flex-grow: 1;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.9rem;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: var(--transition);
+    flex-grow: 1; font-size: 1rem; font-weight: 600; padding: 0.9rem;
+    border: none; border-radius: 12px; cursor: pointer; transition: var(--transition);
 }
-button:focus-visible { /* Meilleure accessibilité */
-    outline: 2px solid var(--c-primary);
-    outline-offset: 2px;
-}
+button:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
 
 .validate { background-color: var(--c-primary); color: white; }
-.validate:hover { background-color: var(--c-primary-hover); }
+.validate:hover:not(:disabled) { background-color: var(--c-primary-hover); } /* Ajout :not(:disabled) */
 .cancel { background-color: var(--c-danger); color: white; }
-.cancel:hover { background-color: var(--c-danger-hover); }
+.cancel:hover:not(:disabled) { background-color: var(--c-danger-hover); } /* Ajout :not(:disabled) */
 
 button:disabled {
-    background-color: var(--c-disabled-bg);
-    color: var(--c-disabled-text);
-    cursor: not-allowed;
-    transform: none;
+    background-color: var(--c-disabled-bg); color: var(--c-disabled-text);
+    cursor: not-allowed; transform: none;
 }
 input:disabled, select:disabled {
-    background-color: var(--c-disabled-bg);
-    color: var(--c-disabled-text);
+    background-color: var(--c-disabled-bg); color: var(--c-disabled-text);
     cursor: not-allowed;
+    border-color: var(--c-border); /* Assurer que la bordure reste visible mais discrète */
 }
-input:disabled { color: var(--c-disabled-text); }
+input:disabled { color: var(--c-disabled-text); } /* Spécificité pour input */
+select:disabled {
+     /* Optionnel: Changer la flèche pour indiquer l'état désactivé */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23AAAAAA" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+}
 
 
 #status {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-top: 2rem;
-    min-height: 1.2em;
-    color: var(--c-text-secondary);
-    transition: var(--transition);
+    font-size: 1rem; font-weight: 500; margin-top: 2rem; min-height: 1.2em;
+    color: var(--c-text-secondary); transition: var(--transition);
+    line-height: 1.4; /* Améliore lisibilité si multiligne */
 }
 #status.active { color: var(--c-success); font-weight: 600; }
+#status.error { color: var(--c-error); font-weight: 600; } /* NOUVEAU: Style erreur */

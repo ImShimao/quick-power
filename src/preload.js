@@ -3,19 +3,27 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Fonctions Shutdown
-  schedule: (minutes) => ipcRenderer.send('schedule-shutdown', minutes),
-  cancel: () => ipcRenderer.send('cancel-shutdown'),
-  onUpdateStatus: (callback) => ipcRenderer.on('update-status', (event, time) => {
-    callback(time);
+  schedule: (minutes) => ipcRenderer.send('schedule-shutdown', minutes), //
+  cancel: () => ipcRenderer.send('cancel-shutdown'), //
+  onUpdateStatus: (callback) => ipcRenderer.on('update-status', (event, isoTime) => { // Modifié pour accepter ISO
+    callback(isoTime); //
   }),
-  
-  // Fonctions Thème
-  saveTheme: (theme) => ipcRenderer.send('save-theme', theme),
-  onLoadSettings: (callback) => ipcRenderer.on('load-settings', (event, settings) => {
-    callback(settings);
+  // NOUVEAU: Pour le compte à rebours
+  onUpdateCountdown: (callback) => ipcRenderer.on('update-countdown', (event, remainingMilliseconds) => {
+    callback(remainingMilliseconds);
+  }),
+  // NOUVEAU: Pour les erreurs
+  onShowError: (callback) => ipcRenderer.on('show-error', (event, message) => {
+      callback(message);
   }),
 
-  // NOUVEAU: Fonctions de la Fenêtre
-  minimize: () => ipcRenderer.send('window-minimize'),
-  close: () => ipcRenderer.send('window-close')
+  // Fonctions Thème
+  saveTheme: (theme) => ipcRenderer.send('save-theme', theme), //
+  onLoadSettings: (callback) => ipcRenderer.on('load-settings', (event, settings) => { //
+    callback(settings); //
+  }),
+
+  // Fonctions de la Fenêtre
+  minimize: () => ipcRenderer.send('window-minimize'), //
+  close: () => ipcRenderer.send('window-close') //
 });
