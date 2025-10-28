@@ -1,31 +1,28 @@
 // renderer.js
 
-// Fonction utilitaire pour formater le temps restant (inchangée)
+// Fonctions formatTime et getActionLabel (inchangées)
 function formatTime(milliseconds) {
     if (milliseconds <= 0) return "00:00:00";
     let totalSeconds = Math.floor(milliseconds / 1000);
     let hours = Math.floor(totalSeconds / 3600);
     let minutes = Math.floor((totalSeconds % 3600) / 60);
     let seconds = totalSeconds % 60;
-
     const pad = (num) => String(num).padStart(2, '0');
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 }
-
-// Fonction pour obtenir le libellé de l'action (inchangée)
 function getActionLabel(action) {
     switch(action) {
         case 'shutdown': return 'Arrêt';
         case 'restart': return 'Redémarrage';
-        case 'hibernate': return 'Mise en veille prolongée';
-        default: return 'Action inconnue';
+        case 'hibernate': return 'Veille prolongée'; // Corrigé
+        default: return 'Action';
     }
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => { // Plus besoin d'async
 
-    // Éléments (inchangés)
+    // Éléments
     const minimizeBtn = document.getElementById('minimize-btn');
     const closeBtn = document.getElementById('close-btn');
     const themeToggle = document.getElementById('theme-toggle');
@@ -35,37 +32,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeValueInput = document.getElementById('time-value');
     const timeUnitSelect = document.getElementById('time-unit');
     const actionRadios = document.querySelectorAll('input[name="powerAction"]');
+    // Plus besoin de contentDiv pour le warning
 
     let currentScheduledAction = null;
     let currentScheduledTime = null;
+    // adminWarningElement retiré
 
-    // --- Logique Fenêtre & Thème (inchangés) ---
+    // --- Logique Fenêtre & Thème ---
     if(minimizeBtn) minimizeBtn.addEventListener('click', () => window.electronAPI.minimize());
     if(closeBtn) closeBtn.addEventListener('click', () => window.electronAPI.close());
-    if(themeToggle) themeToggle.addEventListener('change', () => {
-        const newTheme = themeToggle.checked ? 'dark' : 'light';
+    if(themeToggle) themeToggle.addEventListener('change', (event) => { // 'event' est bon ici
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        console.log("Theme toggle changed to:", newTheme); // Log pour débugger
         document.body.className = newTheme;
         window.electronAPI.saveTheme(newTheme);
     });
+
+    // --- Chargement des Settings ---
     window.electronAPI.onLoadSettings((settings) => {
+        console.log("Settings reçus:", settings);
         const theme = settings.theme || 'light';
         document.body.className = theme;
         if(themeToggle) themeToggle.checked = (theme === 'dark');
+        if (settings.lastDurationValue && timeValueInput) { timeValueInput.value = settings.lastDurationValue; }
+        if (settings.lastDurationUnit && timeUnitSelect) { timeUnitSelect.value = settings.lastDurationUnit; }
     });
 
-    // --- Fonction pour mettre à jour le statut/afficher les erreurs ---
+    // displayAdminWarning retiré
+
+    // --- Fonctions UI ---
     function updateStatusText(message, isError = false) {
-        statusEl.textContent = message; // Mise à jour simple ici
+        statusEl.textContent = message;
         statusEl.classList.toggle('error', isError);
-        if (isError) {
-             statusEl.classList.remove('active');
-        }
-        if (isError && validateBtn.textContent.includes('...')) {
-            resetUIState(false);
+        statusEl.classList.toggle('active', !isError && message.includes("dans")); // 'active' seulement si c'est un countdown
+        // Reset UI si erreur PENDANT la programmation/annulation
+        if (isError && (validateBtn.textContent.includes('...') || cancelBtn.textContent.includes('...'))) {
+            // Si on avait une action programmée avant l'erreur, revenir à cet état
+            if (currentScheduledAction) {
+                 setUIState(true, currentScheduledAction);
+            } else {
+                 resetUIState(false); // Sinon, réinitialiser complètement
+            }
+             // Réinitialiser les textes des boutons
+             validateBtn.textContent = currentScheduledAction ? `${getActionLabel(currentScheduledAction)} programmé !` : 'Valider';
+             cancelBtn.textContent = 'Annuler';
         }
     }
 
-    // --- Fonction pour gérer l'état de l'interface ---
     function setUIState(isScheduled, action = null) {
         const elementsToDisable = [validateBtn, timeValueInput, timeUnitSelect, ...actionRadios];
         elementsToDisable.forEach(el => el.disabled = isScheduled);
@@ -73,17 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isScheduled && action) {
              const actionLabel = getActionLabel(action);
-             // Modification ici pour le texte du bouton
              validateBtn.textContent = `${actionLabel} programmé !`;
         } else {
             validateBtn.textContent = 'Valider';
         }
     }
 
-    // Fonction pour réinitialiser l'UI
     function resetUIState(isCancelled = false) {
-        setUIState(false);
-        // Modification ici pour les messages
+        setUIState(false); // Réactive les contrôles
         statusEl.textContent = isCancelled ? "Action annulée !" : "Aucune action programmée.";
         statusEl.classList.remove('active', 'error');
         currentScheduledAction = null;
@@ -91,19 +101,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isCancelled) {
              setTimeout(() => {
-                 if (statusEl.textContent === "Action annulée !") { // Vérifie si le message n'a pas changé entre temps
+                 // Ne reset le message que s'il est toujours "Action annulée !"
+                 if (statusEl.textContent === "Action annulée !") {
                      statusEl.textContent = "Aucune action programmée.";
                  }
-             }, 3000); // Disparaît après 3 secondes
+             }, 3000);
          }
     }
 
-
-    // --- Logique Power Actions (Validate et Cancel inchangés au niveau de l'appel API) ---
+    // --- Logique Power Actions ---
     if(validateBtn) validateBtn.addEventListener('click', async () => {
-        validateBtn.textContent = 'Programmation...'; // Texte temporaire
+        validateBtn.textContent = 'Programmation...';
         validateBtn.disabled = true;
-        cancelBtn.disabled = true;
+        cancelBtn.disabled = true; // Désactiver Annuler aussi temporairement
         [...actionRadios, timeValueInput, timeUnitSelect].forEach(el => el.disabled = true);
 
         const value = parseInt(timeValueInput.value, 10);
@@ -115,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStatusText("Veuillez entrer une durée valide (nombre positif).", true);
             return;
         }
-
         let minutes = (unit === 'hours') ? (value * 60) : value;
         const maxMinutes = 60 * 24 * 7;
         if (minutes > maxMinutes) {
@@ -124,93 +133,94 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const result = await window.electronAPI.schedule({ minutes, action });
+            console.log("Envoi IPC schedule:", { minutes, action, originalValue: value, originalUnit: unit });
+            const result = await window.electronAPI.schedule({ minutes, action, originalValue: value, originalUnit: unit });
+            console.log("Retour IPC schedule:", result);
             if (!result.success) {
-                // L'erreur est gérée par onShowError si elle vient du main process
-                // Si l'invoke lui-même échoue (rare), on l'affiche ici
+                // L'erreur sera affichée par onShowError si elle vient du catch de main.js,
+                // sinon on l'affiche ici (erreur de validation par ex.)
                 updateStatusText(result.error || "Erreur inconnue.", true);
             }
-            // Pas besoin de else, onUpdateStatus fera le reste si succès
+            // Si succès, onUpdateStatus et onUpdateCountdown mettront à jour l'UI
         } catch (error) {
-            console.error("Erreur IPC schedule:", error);
+            console.error("Erreur IPC schedule (catch renderer):", error);
             updateStatusText("Erreur de communication (programmation).", true);
         }
     });
 
     if(cancelBtn) cancelBtn.addEventListener('click', async () => {
-        cancelBtn.textContent = 'Annulation...'; // Texte temporaire
+        cancelBtn.textContent = 'Annulation...';
         cancelBtn.disabled = true;
-        validateBtn.disabled = true; // Inchangé
+        validateBtn.disabled = true; // Désactive aussi Valider pendant l'annulation
 
         try {
+            console.log("Envoi IPC cancel");
             const result = await window.electronAPI.cancel();
+            console.log("Retour IPC cancel:", result);
             if (!result.success) {
-                // Gérer les erreurs spécifiques d'annulation retournées par le main process
-                 updateStatusText(result.error || "Erreur inconnue lors de l'annulation.", true);
-                 // Si l'annulation échoue mais qu'une action était prévue, on remet l'état "programmé"
-                 if(currentScheduledAction){
-                    setUIState(true, currentScheduledAction); // Remettre l'état visuel programmé
-                 } else {
-                    resetUIState(false); // Sinon, réinitialiser
+                 updateStatusText(result.error || "Erreur lors de l'annulation.", true);
+                 // Si l'annulation échoue, on restaure l'état précédent si on le connait
+                 if(currentScheduledAction) {
+                     setUIState(true, currentScheduledAction);
                  }
-                 cancelBtn.textContent = 'Annuler'; // Réinitialiser texte bouton Annuler
             }
-             // Si succès, onUpdateStatus fera le resetUIState
+             // Si succès, onUpdateStatus fera le resetUIState via le message null reçu
+             // On s'assure juste que le bouton Annuler retrouve son texte
+             cancelBtn.textContent = 'Annuler';
+
         } catch(error) {
-             console.error("Erreur IPC cancel:", error);
+             console.error("Erreur IPC cancel (catch renderer):", error);
              updateStatusText("Erreur de communication (annulation).", true);
-             // En cas d'erreur IPC, réactiver au cas où
+             // Réactiver l'UI dans l'état où elle était si possible
              if(currentScheduledAction) setUIState(true, currentScheduledAction); else resetUIState(false);
              cancelBtn.textContent = 'Annuler';
         }
     });
 
-    // Reçoit l'état initial ou après une action (programmation/annulation)
+    // Reçoit l'état du main process
     window.electronAPI.onUpdateStatus((data) => {
+        console.log("IPC: update-status received:", data);
         if (data && data.time && data.action) {
             currentScheduledTime = new Date(data.time);
             currentScheduledAction = data.action;
-            setUIState(true, currentScheduledAction); // Met l'UI en état "programmé", met à jour le texte du bouton Valider
-            // Le compte à rebours sera mis à jour par onUpdateCountdown
+            setUIState(true, currentScheduledAction);
+            // Le texte de status sera mis à jour par onUpdateCountdown
         } else {
-             // Si on reçoit null, c'est soit une annulation réussie, soit l'état initial
-             // On vérifie si le bouton annuler affichait "Annulation..." pour savoir si on vient d'annuler
-            resetUIState(cancelBtn.textContent === 'Annulation...');
-            cancelBtn.textContent = 'Annuler'; // S'assurer que le texte est réinitialisé
+            // Détermine si on vient d'annuler en regardant si le bouton affiche "Annulation..."
+            const justCancelled = (cancelBtn.textContent === 'Annulation...');
+            resetUIState(justCancelled);
+            // S'assurer que les textes des boutons sont corrects après reset
+            validateBtn.textContent = 'Valider';
+            cancelBtn.textContent = 'Annuler';
         }
     });
 
      // Gère la mise à jour du compte à rebours
      window.electronAPI.onUpdateCountdown((remainingMilliseconds) => {
+         // console.log("IPC: update-countdown received:", remainingMilliseconds); // Peut être verbeux
          if (remainingMilliseconds > 0 && currentScheduledAction) {
              const actionLabel = getActionLabel(currentScheduledAction);
-             // --- MODIFICATION ICI ---
              statusEl.textContent = `${actionLabel} dans ${formatTime(remainingMilliseconds)} !`;
              statusEl.classList.add('active');
              statusEl.classList.remove('error');
          } else if (currentScheduledAction && remainingMilliseconds <= 0) {
               const actionLabel = getActionLabel(currentScheduledAction);
-              // --- MODIFICATION ICI ---
-              statusEl.textContent = `${actionLabel} imminent !`; // Ou "en cours..."
-              // Peut-être arrêter le clignotement ou changer de style
-              // resetUIState(); // Décommenter pour réinitialiser l'UI une fois le temps écoulé
+              statusEl.textContent = `${actionLabel} imminent !`;
+              statusEl.classList.add('active'); // Garder le style succès
+              statusEl.classList.remove('error');
+              // L'état (boutons désactivés etc.) reste jusqu'à ce que main process envoie un update-status null
          }
-         // Si pas d'action (currentScheduledAction est null), on ne fait rien ici, géré par resetUIState
+         // Si currentScheduledAction est null, ne rien faire (resetUIState s'en charge)
      });
 
-
-    // Gère les messages d'erreur du main process (inchangé)
+    // Gère les messages d'erreur du main process
     window.electronAPI.onShowError((message) => {
+        console.log("IPC: show-error received:", message);
         updateStatusText(message, true);
-        if (validateBtn.textContent.includes('...')) {
-           resetUIState(false);
-        } else if (cancelBtn.textContent.includes('...')) {
-           if(currentScheduledAction) setUIState(true, currentScheduledAction); else resetUIState(false);
-           cancelBtn.textContent = 'Annuler';
-        }
+        // La logique de réactivation est maintenant dans updateStatusText
     });
 
     // État initial
     resetUIState(false);
 
-});
+}); // Fin de DOMContentLoaded
