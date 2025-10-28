@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
-    <title>Shutdown App</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>QuickPower</title> <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        
+
         <header class="titlebar">
             <div class="drag-region"></div>
-            
+
             <div class="theme-switch-wrapper">
                 <label class="theme-switch" for="theme-toggle">
                     <input type="checkbox" id="theme-toggle" />
@@ -28,8 +27,19 @@
         </header>
 
         <main class="content">
-            <h2>Programmer l'arrêt :</h2>
-            
+            <h2>Programmer une action :</h2> <div class="action-selector">
+                <label>
+                    <input type="radio" name="powerAction" value="shutdown" checked> Arrêter
+                </label>
+                <label>
+                    <input type="radio" name="powerAction" value="restart"> Redémarrer
+                </label>
+                <label>
+                    <input type="radio" name="powerAction" value="hibernate"> Mettre en veille prolongée
+                </label>
+            </div>
+
+
             <div class="time-input-container" id="time-input-group">
                 <input type="number" id="time-value" value="30" min="1">
                 <select id="time-unit">
@@ -37,13 +47,13 @@
                     <option value="hours">Heures</option>
                 </select>
             </div>
-            
+
             <div class="button-group">
                 <button id="validate-btn" class="validate">Valider</button>
                 <button id="cancel-btn" class="cancel">Annuler</button>
             </div>
 
-            <p id="status">Aucun arrêt programmé.</p>
+            <p id="status">Aucune action programmée.</p>
         </main>
     </div>
 
