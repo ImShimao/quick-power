@@ -4,6 +4,9 @@
   "version": "1.2.0",
   "description": "Un utilitaire simple pour planifier l'arrêt, le redémarrage ou la mise en veille prolongée du PC, avec icône de notification.",
   "main": "src/main.js",
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  },
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder"
@@ -21,8 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^31.0.2",
-    "electron-builder": "^24.13.3",
-    "iconv-lite": "^0.6.3"
+    "electron-builder": "^24.13.3"
   },
   "build": {
     "appId": "com.ImShimao.quickpower",
