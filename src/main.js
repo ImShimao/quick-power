@@ -124,14 +124,13 @@ function createWindow() {
     const settings = store.getAll();
 
     win = new BrowserWindow({
-        width: 400,
-        // CORRECTION ICI : Passage de 420 à 520 pour accueillir la nouvelle UI
-        height: 520, 
+        width: 350,   // Légèrement plus large pour éviter que le texte ne soit serré
+        height: 460,  // Beaucoup plus court (au lieu de 520) pour supprimer le vide
         resizable: false,
         frame: false,
         transparent: true,
         icon: ICON_PATH,
-        backgroundColor: '#00000000', // Astuce: Transparent hex pour éviter le flash blanc
+        backgroundColor: '#00000000',
         show: false, 
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

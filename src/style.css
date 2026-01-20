@@ -1,11 +1,7 @@
-/* style.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
     --font-family: 'Inter', -apple-system, sans-serif;
-    
-    /* Thème Clair */
     --c-bg: #ffffff;
     --c-text-primary: #222;
     --c-text-secondary: #666;
@@ -15,18 +11,15 @@
     --c-icon-color: #555;
     --c-icon-color-hover: #000;
     --c-close-hover-bg: #e60000;
-    
     --c-primary: #007aff;
     --c-primary-hover: #005ec4;
     --c-danger: #dc3545;
     --c-success: #28a745;
     --c-error: #dc3545;
-    
     --c-disabled-bg: #e9ecef;
     --c-disabled-text: #adb5bd;
     --c-select-option-bg: white;
     --c-select-option-text: var(--c-text-primary);
-    
     --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     --transition: all 0.2s ease-in-out;
 }
@@ -41,18 +34,15 @@ body.dark {
     --c-icon-color: #999;
     --c-icon-color-hover: #fff;
     --c-close-hover-bg: #e60000;
-    
     --c-primary: #0a84ff;
     --c-primary-hover: #339dff;
     --c-danger: #ff453a;
     --c-success: #30d158;
     --c-error: #ff453a;
-    
     --c-disabled-bg: #2c2c2e;
     --c-disabled-text: #555;
     --c-select-option-bg: #3a3a3c;
     --c-select-option-text: var(--c-text-primary);
-    
     --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
@@ -69,7 +59,7 @@ html, body {
 .container { 
     background: var(--c-bg); 
     color: var(--c-text-primary); 
-    border-radius: 0px; /* Rectangulaire */
+    border-radius: 0px;
     box-shadow: var(--shadow); 
     height: 100%; 
     display: flex; 
@@ -78,48 +68,31 @@ html, body {
     transition: background-color var(--transition), color var(--transition); 
 }
 
-/* --- Barre de Titre --- */
 .titlebar { 
-    display: flex; 
-    align-items: center; 
-    justify-content: flex-end; 
-    height: 44px; 
-    padding: 0 8px; 
-    flex-shrink: 0; 
-    position: relative; 
+    display: flex; align-items: center; justify-content: flex-end; 
+    height: 44px; padding: 0 8px; flex-shrink: 0; position: relative; 
     border-bottom: 1px solid var(--c-border); 
 }
 
 .drag-region { 
-    position: absolute; 
-    top: 0; left: 0; 
-    width: 100%; 
-    height: 100%; 
-    -webkit-app-region: drag; 
-    z-index: 0;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    -webkit-app-region: drag; z-index: 0;
 }
 
 .controls-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 10; 
-    -webkit-app-region: no-drag; 
-    gap: 8px;
+    display: flex; align-items: center; position: relative; z-index: 10; 
+    -webkit-app-region: no-drag; gap: 8px;
 }
 
 .icon-btn {
     background: transparent; border: none; padding: 5px;
-    color: var(--c-icon-color); cursor: pointer;
-    border-radius: 6px; 
+    color: var(--c-icon-color); cursor: pointer; border-radius: 6px; 
     display: flex; align-items: center; justify-content: center;
     transition: var(--transition);
 }
 .icon-btn:hover { background: var(--c-input-bg-hover); color: var(--c-icon-color-hover); }
 
-.theme-switch-wrapper, .window-controls { 
-    display: flex; align-items: center; 
-}
+.theme-switch-wrapper, .window-controls { display: flex; align-items: center; }
 
 .theme-switch { 
     display: flex; align-items: center; justify-content: center; 
@@ -148,69 +121,45 @@ body.dark .theme-switch .icon-sun { color: #FFD60A; }
 .window-controls button:hover { background: var(--c-input-bg-hover); color: var(--c-icon-color-hover); }
 #close-btn:hover { background: var(--c-close-hover-bg); color: white; }
 
-/* --- Contenu --- */
 .content {
-    padding: 1.5rem 2rem;
-    text-align: center;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding: 1.5rem 2rem; text-align: center; flex-grow: 1;
+    display: flex; flex-direction: column; justify-content: center;
 }
 
-/* --- TIMER RECTANGULAIRE (SVG STYLE) --- */
 .rect-timer {
-    position: relative;
-    width: 220px; 
-    height: 60px;
-    margin: 0 auto 1.5rem;
+    position: relative; width: 220px; height: 60px; margin: 0 auto 1.5rem;
     display: flex; align-items: center; justify-content: center;
-    /* On applique l'ombre ici pour imiter l'ancienne boite */
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.05));
 }
 
 .progress-svg { position: absolute; top: 0; left: 0; }
 
-/* Fond (Bordure inactive) - Imite ton ancienne border: 1px solid */
 .progress-rect-bg {
-    fill: var(--c-input-bg);
-    stroke: var(--c-border);
-    stroke-width: 3px; /* Un peu plus épais pour voir la jauge */
+    fill: var(--c-input-bg); stroke: var(--c-border); stroke-width: 3px;
 }
 
-/* Progression (Bordure active) */
 .progress-rect {
-    fill: transparent;
-    stroke: var(--c-primary);
-    stroke-width: 3px;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.5s linear;
+    fill: transparent; stroke: var(--c-primary); stroke-width: 3px;
+    stroke-linecap: round; transition: stroke-dashoffset 0.5s linear;
 }
 
-.timer-content {
-    z-index: 2; position: relative; width: 100%; text-align: center;
-}
+.timer-content { z-index: 2; position: relative; width: 100%; text-align: center; }
 
 #status {
-    font-size: 1rem; 
-    font-weight: 600; 
-    color: var(--c-text-secondary); 
+    font-size: 1rem; font-weight: 600; color: var(--c-text-secondary); 
     transition: color var(--transition), font-size var(--transition);
-    line-height: 1.2;
-    margin: 0;
+    line-height: 1.2; margin: 0;
 }
 #status.active { color: var(--c-success); font-weight: 700; font-size: 1.3rem; }
 #status.error { color: var(--c-error); font-weight: 600; }
 
-/* --- Reste des styles (Identiques) --- */
 .action-selector {
     display: flex; justify-content: center; gap: 1.2rem;
     margin-bottom: 1rem; flex-wrap: wrap;
 }
 .action-selector label {
     display: inline-flex; align-items: center; cursor: pointer;
-    font-size: 0.9rem; color: var(--c-text-secondary);
-    gap: 0.4rem; 
+    font-size: 0.9rem; color: var(--c-text-secondary); gap: 0.4rem; 
 }
 .action-selector label:hover { color: var(--c-text-primary); }
 .action-selector input[type="radio"] {
