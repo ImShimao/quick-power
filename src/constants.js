@@ -1,3 +1,4 @@
+// src/constants.js
 const path = require('path');
 
 module.exports = {
@@ -9,6 +10,7 @@ module.exports = {
         UPDATE_COUNTDOWN: 'update-countdown',
         SHOW_ERROR: 'show-error',
         SAVE_THEME: 'save-theme',
+        SAVE_AUTO_START: 'save-auto-start', // NOUVEAU
         LOAD_SETTINGS: 'load-settings',
         WINDOW_MINIMIZE: 'window-minimize',
         WINDOW_CLOSE: 'window-close',
@@ -19,6 +21,5 @@ module.exports = {
         RESTART: 'restart',
         HIBERNATE: 'hibernate'
     },
-    // On remonte d'un niveau (..) pour sortir de src/ et trouver assets/
     ICON_PATH: path.join(__dirname, '..', 'assets/icon.ico')
 };

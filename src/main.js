@@ -70,10 +70,10 @@ scheduler.on('status-changed', (state) => {
 // Réception du TICK (chaque seconde)
 scheduler.on('tick', ({ remaining, ratio }) => {
     if (win && !win.isDestroyed()) {
-        win.webContents.send(IPC_CHANNELS.UPDATE_COUNTDOWN, remaining);
+        // MISE À JOUR : On envoie maintenant le ratio au Renderer pour le cercle SVG
+        win.webContents.send(IPC_CHANNELS.UPDATE_COUNTDOWN, remaining, ratio);
         
-        // NOUVEAU : Barre de progression dans la taskbar
-        // setProgressBar prend une valeur entre 0 et 1.
+        // Barre de progression dans la taskbar Windows
         win.setProgressBar(ratio);
     }
     updateTray(remaining);
@@ -97,6 +97,17 @@ ipcMain.handle(IPC_CHANNELS.CANCEL, async () => {
 });
 
 ipcMain.on(IPC_CHANNELS.SAVE_THEME, (event, theme) => store.set('theme', theme));
+
+// NOUVEAU : Handler pour sauvegarder le paramètre "Lancer au démarrage"
+ipcMain.on(IPC_CHANNELS.SAVE_AUTO_START, (event, openAtLogin) => {
+    store.set('openAtLogin', openAtLogin);
+    app.setLoginItemSettings({ 
+        openAtLogin: openAtLogin, 
+        path: process.execPath, 
+        args: ['--hidden'] 
+    });
+});
+
 ipcMain.on(IPC_CHANNELS.WINDOW_MINIMIZE, () => win?.minimize());
 ipcMain.on(IPC_CHANNELS.WINDOW_CLOSE, () => win?.close());
 ipcMain.on(IPC_CHANNELS.SHOW_WINDOW, () => win?.show());
@@ -114,13 +125,13 @@ function createWindow() {
 
     win = new BrowserWindow({
         width: 400,
-        height: 420,
+        // CORRECTION ICI : Passage de 420 à 520 pour accueillir la nouvelle UI
+        height: 520, 
         resizable: false,
         frame: false,
         transparent: true,
         icon: ICON_PATH,
-        backgroundColor: '#00000000', // Astuce: Transparent hex pour éviter le flash blanc (parfois capricieux)
-        // Ou utilise la couleur de ton thème sombre par défaut: '#1c1c1e'
+        backgroundColor: '#00000000', // Astuce: Transparent hex pour éviter le flash blanc
         show: false, 
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -133,6 +144,7 @@ function createWindow() {
     win.loadFile(path.join(__dirname, 'index.html'));
 
     win.webContents.on('did-finish-load', () => {
+        // On envoie les settings au chargement pour cocher/décocher le bouton auto-start
         win.webContents.send(IPC_CHANNELS.LOAD_SETTINGS, settings);
         sendStatusToWindow();
     });
@@ -158,7 +170,6 @@ function buildContextMenu() {
     const state = scheduler.getState();
     const isActionScheduled = !!state.action;
 
-    // NOUVEAU : Menu contextuel enrichi
     const contextMenu = Menu.buildFromTemplate([
         {
             label: (win && win.isVisible()) ? 'Masquer Fenêtre' : 'Ouvrir QuickPower',
@@ -170,7 +181,7 @@ function buildContextMenu() {
         { type: 'separator' },
         {
             label: 'Programmation Rapide',
-            enabled: !isActionScheduled, // Grisé si déjà programmé
+            enabled: !isActionScheduled,
             submenu: [
                 { label: 'Arrêter dans 15 min', click: () => scheduleQuick(15, POWER_ACTIONS.SHUTDOWN) },
                 { label: 'Arrêter dans 30 min', click: () => scheduleQuick(30, POWER_ACTIONS.SHUTDOWN) },
@@ -197,7 +208,9 @@ function buildContextMenu() {
 }
 
 app.whenReady().then(() => {
-    app.setLoginItemSettings({ openAtLogin: true, path: process.execPath, args: ['--hidden'] });
+    // MISE À JOUR : Chargement dynamique du paramètre "openAtLogin"
+    const autoStart = store.get('openAtLogin') ?? true;
+    app.setLoginItemSettings({ openAtLogin: autoStart, path: process.execPath, args: ['--hidden'] });
 
     try {
         tray = new Tray(ICON_PATH);
