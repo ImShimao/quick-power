@@ -174,20 +174,70 @@ body.dark .theme-switch .icon-sun { color: #FFD60A; }
 .action-selector input[type="radio"]:checked { border-color: var(--c-primary); }
 .action-selector input[type="radio"]:checked::before { transform: scale(1); }
 
+/* --- Bloc unifié : Champ temps + Menu (MODIFIÉ) --- */
 #time-input-group {
-    display: flex; border: 1px solid var(--c-border); border-radius: 8px;
-    overflow: hidden; height: 44px; margin-bottom: 1rem; 
+    display: flex;            /* Aligne les éléments côte à côte */
+    align-items: center;      /* Centre verticalement */
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
     background-color: var(--c-input-bg);
+    height: 44px;
+    margin-bottom: 1rem;
+    overflow: hidden;         /* Garde tout à l'intérieur des bords arrondis */
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
-#time-input-group:focus-within { border-color: var(--c-primary); }
 
-input[type="number"], select#time-unit {
-    font-family: var(--font-family); font-size: 1.1rem; font-weight: 600;
-    background: transparent; color: var(--c-text-primary); border: none;
-    height: 100%; padding: 0 0.8rem;
+#time-input-group:focus-within {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15); /* Halo bleu au focus */
 }
-input[type="number"] { flex-grow: 1; text-align: center; color: var(--c-primary); }
-select#time-unit { flex-shrink: 0; border-left: 1px solid var(--c-border); color: var(--c-text-secondary); cursor: pointer; }
+
+/* 1. Le champ Nombre */
+#time-input-group input[type="number"] {
+    flex-grow: 1;             /* Prend tout l'espace disponible à gauche */
+    border: none;             /* Pas de bordure autour du chiffre */
+    background: transparent;
+    text-align: center;
+    font-family: var(--font-family);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--c-primary);
+    outline: none;
+    height: 100%;
+    
+    /* Astuce : Supprime les petites flèches (spinners) haut/bas moches */
+    -moz-appearance: textfield; 
+}
+#time-input-group input[type="number"]::-webkit-outer-spin-button,
+#time-input-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 2. Le menu Minutes/Heures */
+#time-input-group select {
+    width: 110px;             /* Largeur fixe pour être bien visible */
+    flex-shrink: 0;           /* On l'empêche de s'écraser */
+    border: none;
+    border-left: 1px solid var(--c-border); /* Juste une ligne de séparation verticale */
+    background-color: transparent;
+    color: var(--c-text-secondary);
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    height: 100%;
+    text-align: center;
+    text-align-last: center;  /* Centre le texte dans le menu */
+    padding: 0;
+}
+
+#time-input-group select:hover {
+    background-color: rgba(0,0,0,0.03);
+    color: var(--c-text-primary);
+}
+/* ---------------------------------------------------- */
 
 .presets {
     display: flex; gap: 8px; margin-bottom: 1.5rem; justify-content: center;

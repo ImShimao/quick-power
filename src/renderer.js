@@ -28,6 +28,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSettingsBtn = document.getElementById('close-settings-btn');
     const autoStartToggle = document.getElementById('auto-start-toggle');
 
+    // --- Restriction aux chiffres uniquement (AJOUT) ---
+    if (timeValueInput) {
+        // 1. Bloquer les touches non numériques au clavier (e, +, -, virgule, point)
+        timeValueInput.addEventListener('keydown', (e) => {
+            // On autorise les touches de contrôle et de navigation
+            const allowedKeys = ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape'];
+            if (allowedKeys.includes(e.key)) return;
+
+            // On autorise ctrl+a, ctrl+c, ctrl+v, ctrl+x
+            if (e.ctrlKey || e.metaKey) return;
+
+            // On autorise strictement les chiffres (0-9)
+            if (!/^[0-9]$/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        // 2. Nettoyage supplémentaire (pour le copier-coller ou le glisser-déposer)
+        timeValueInput.addEventListener('input', (e) => {
+            // Remplace tout ce qui n'est pas un chiffre par vide
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    }
+    // ---------------------------------------------------
+
     // --- Logique Barre Rectangulaire SVG ---
     const rect = document.querySelector('.progress-rect');
     
