@@ -27,15 +27,21 @@
     "electron-builder": "^24.13.3"
   },
   "build": {
-    "appId": "com.ImShimao.quickpower",
-    "productName": "QuickPower",
-    "files": [
-      "src/**/*",
-      "assets/**/*"
-    ],
-    "win": {
-      "target": "portable",
-      "icon": "assets/icon.ico"
-    }
+      "appId": "com.ImShimao.quickpower",
+      "productName": "QuickPower",
+      "files": [
+        "src/**/*",
+        "assets/**/*"
+      ],
+      "win": {
+        "target": "nsis", 
+        "icon": "assets/icon.ico"
+      },
+      "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true
+      }
   }
 }

@@ -5,27 +5,31 @@
 /* --- Définition des variables --- */
 :root {
     --font-family: 'Inter', -apple-system, sans-serif;
+    
     /* Thème Clair */
     --c-bg: #ffffff;
     --c-text-primary: #222;
     --c-text-secondary: #666;
     --c-border: #e0e0e0;
     --c-input-bg: #f7f7f7;
-    --c-input-bg-hover: #f0f0f0; /* New: Input background on hover */
+    --c-input-bg-hover: #f0f0f0;
     --c-icon-color: #555;
     --c-icon-color-hover: #000;
     --c-close-hover-bg: #e60000;
+    
     --c-primary: #007aff;
     --c-primary-hover: #005ec4;
     --c-danger: #dc3545;
     --c-danger-hover: #c82333;
     --c-success: #28a745;
     --c-error: #dc3545;
+    
     --c-disabled-bg: #e9ecef;
     --c-disabled-text: #adb5bd;
-    --c-select-option-bg: white; /* Background for dropdown options */
-    --c-select-option-text: var(--c-text-primary); /* Text color for dropdown options */
-    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Further softened shadow */
+    --c-select-option-bg: white;
+    --c-select-option-text: var(--c-text-primary);
+    
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     --transition: all 0.2s ease-in-out;
 }
 
@@ -36,69 +40,128 @@ body.dark {
     --c-text-secondary: #8e8e93;
     --c-border: #3a3a3c;
     --c-input-bg: #2c2c2e;
-    --c-input-bg-hover: #3a3a3c; /* New: Input background on hover */
+    --c-input-bg-hover: #3a3a3c;
     --c-icon-color: #999;
     --c-icon-color-hover: #fff;
     --c-close-hover-bg: #e60000;
+    
     --c-primary: #0a84ff;
     --c-primary-hover: #339dff;
     --c-danger: #ff453a;
     --c-danger-hover: #ff6b61;
     --c-success: #30d158;
     --c-error: #ff453a;
+    
     --c-disabled-bg: #2c2c2e;
     --c-disabled-text: #555;
-    --c-select-option-bg: #3a3a3c; /* Dark background for dropdown options */
-    --c-select-option-text: var(--c-text-primary); /* Text color for dropdown options */
+    --c-select-option-bg: #3a3a3c;
+    --c-select-option-text: var(--c-text-primary);
+    
     --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
-
 /* --- Styles de base --- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: transparent; font-family: var(--font-family); padding: 8px; height: 100vh; overflow: hidden; }
-.container { background: var(--c-bg); color: var(--c-text-primary); border-radius: 16px; box-shadow: var(--shadow); height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: background-color var(--transition), color var(--transition); }
+
+html, body { 
+    background: transparent; /* Important pour la transparence Electron */
+    font-family: var(--font-family); 
+    padding: 8px; /* Espace pour l'ombre */
+    height: 100vh; 
+    overflow: hidden; 
+}
+
+.container { 
+    background: var(--c-bg); 
+    color: var(--c-text-primary); 
+    border-radius: 16px; 
+    box-shadow: var(--shadow); 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    transition: background-color var(--transition), color var(--transition); 
+}
 
 /* --- Barre de Titre --- */
-.titlebar { display: flex; align-items: center; justify-content: flex-end; height: 44px; padding: 0 8px; flex-shrink: 0; position: relative; border-bottom: 1px solid var(--c-border); transition: border-color var(--transition); }
-.drag-region { position: absolute; top: 0; left: 0; width: calc(100% - 110px); /* Slightly increased non-drag area */ height: 100%; -webkit-app-region: drag; }
-.theme-switch-wrapper, .window-controls { -webkit-app-region: no-drag; display: flex; align-items: center; z-index: 10; }
-.theme-switch { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: var(--transition); margin-right: 4px; }
-.theme-switch:hover { background: var(--c-input-bg-hover); } /* Consistent hover */
+.titlebar { 
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-end; 
+    height: 44px; 
+    padding: 0 8px; 
+    flex-shrink: 0; 
+    position: relative; 
+    border-bottom: 1px solid var(--c-border); 
+    transition: border-color var(--transition); 
+}
+
+.drag-region { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: calc(100% - 110px); 
+    height: 100%; 
+    -webkit-app-region: drag; /* Rend la fenêtre déplaçable */
+}
+
+.theme-switch-wrapper, .window-controls { 
+    -webkit-app-region: no-drag; 
+    display: flex; 
+    align-items: center; 
+    z-index: 10; 
+}
+
+/* Switch Thème */
+.theme-switch { 
+    display: flex; align-items: center; justify-content: center; 
+    width: 32px; height: 32px; border-radius: 6px; 
+    cursor: pointer; transition: var(--transition); margin-right: 4px; 
+}
+.theme-switch:hover { background: var(--c-input-bg-hover); }
 .theme-switch input { display: none; }
 .theme-switch .icon { color: var(--c-icon-color); transition: var(--transition); width: 18px; height: 18px; }
 .theme-switch:hover .icon { color: var(--c-icon-color-hover); }
-.icon-sun { display: none; } body.light .icon-moon { display: block; } body.dark .icon-sun { display: block; } body.dark .icon-moon { display: none; }
+
+.icon-sun { display: none; } 
+body.light .icon-moon { display: block; } 
+body.dark .icon-sun { display: block; } 
+body.dark .icon-moon { display: none; }
 body.dark .theme-switch .icon-sun { color: #FFD60A; }
-.window-controls button { background: transparent; border: none; font-size: 1.4rem; font-weight: 400; line-height: 1; width: 32px; height: 32px; padding: 0; color: var(--c-icon-color); cursor: pointer; border-radius: 6px; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
-.window-controls button:hover { background: var(--c-input-bg-hover); color: var(--c-icon-color-hover); } /* Consistent hover */
+
+/* Contrôles Fenêtre */
+.window-controls button { 
+    background: transparent; border: none; 
+    font-size: 1.4rem; font-weight: 400; line-height: 1; 
+    width: 32px; height: 32px; padding: 0; 
+    color: var(--c-icon-color); cursor: pointer; border-radius: 6px; 
+    transition: var(--transition); 
+    display: flex; align-items: center; justify-content: center; 
+}
+.window-controls button:hover { background: var(--c-input-bg-hover); color: var(--c-icon-color-hover); }
 #minimize-btn { font-size: 1.8rem; padding-bottom: 5px; }
 #close-btn { font-size: 1.6rem; padding-bottom: 2px;}
 #close-btn:hover { background: var(--c-close-hover-bg); color: white; }
 
 /* --- Contenu de l'App --- */
 .content {
-    padding: 1.5rem 2rem 2rem; /* Adjusted vertical padding */
+    padding: 1.5rem 2rem 2rem;
     text-align: center;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 h2 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 1.8rem;
+    font-size: 1.3rem; font-weight: 600; margin-bottom: 1.8rem;
     color: var(--c-text-primary);
 }
 
 /* --- Sélecteur d'action --- */
 .action-selector {
-    display: flex;
-    justify-content: center;
-    gap: 1.8rem; /* Slightly more space */
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+    display: flex; justify-content: center; gap: 1.8rem;
+    margin-bottom: 2rem; flex-wrap: wrap;
 }
 .action-selector label {
     display: inline-flex; align-items: center; cursor: pointer;
@@ -111,11 +174,15 @@ h2 {
     border-radius: 50%; position: relative; transition: all var(--transition);
     outline: none; display: grid; place-content: center; margin-top: 1px;
 }
-.action-selector input[type="radio"]::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background-color: var(--c-primary); transform: scale(0); transition: transform 0.1s ease-in-out; }
+.action-selector input[type="radio"]::before { 
+    content: ''; width: 8px; height: 8px; border-radius: 50%; 
+    background-color: var(--c-primary); transform: scale(0); transition: transform 0.1s ease-in-out; 
+}
 .action-selector input[type="radio"]:checked { border-color: var(--c-primary); }
 .action-selector input[type="radio"]:checked::before { transform: scale(1); }
 .action-selector label:hover input[type="radio"]:not(:checked) { border-color: var(--c-text-primary); }
 .action-selector label:hover { color: var(--c-text-primary); }
+
 .action-selector input[type="radio"]:disabled { border-color: var(--c-disabled-text); cursor: not-allowed; background-color: transparent; }
 .action-selector input[type="radio"]:disabled::before { background-color: var(--c-disabled-text); }
 .action-selector label:has(input[type="radio"]:disabled) { color: var(--c-disabled-text); cursor: not-allowed; }
@@ -126,10 +193,12 @@ h2 {
     overflow: hidden; transition: var(--transition); height: 48px;
     margin-bottom: 2rem; background-color: var(--c-input-bg);
 }
-#time-input-group:hover { /* Subtle hover effect on the whole group */
-    background-color: var(--c-input-bg-hover);
+#time-input-group:hover { background-color: var(--c-input-bg-hover); }
+#time-input-group:focus-within { 
+    border-color: var(--c-primary); 
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2); 
+    background-color: var(--c-input-bg); 
 }
-#time-input-group:focus-within { border-color: var(--c-primary); box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2); background-color: var(--c-input-bg); /* Keep background on focus */ }
 
 input[type="number"], select#time-unit {
     font-family: var(--font-family); font-size: 1rem; font-weight: 500;
@@ -140,70 +209,59 @@ input[type="number"]:focus, select#time-unit:focus { outline: none; }
 
 input[type="number"] {
     flex-grow: 1;
-    /* --- MODIFICATION : Centrer le nombre --- */
     text-align: center;
-    font-size: 1.2rem; /* Légèrement plus grand */
+    font-size: 1.2rem;
     font-weight: 600;
     color: var(--c-primary);
-    padding: 0 0.5rem; /* Ajuster si besoin */
-    min-width: 80px; /* Assurer un espace minimum */
+    padding: 0 0.5rem;
+    min-width: 80px;
 }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
 select#time-unit {
     flex-shrink: 0; width: auto; min-width: 100px;
-    border-left: 1px solid var(--c-border); /* Séparateur */
+    border-left: 1px solid var(--c-border);
     text-align: left; cursor: pointer; padding-right: 2.5rem;
     appearance: none; -webkit-appearance: none; -moz-appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 1em;
-    color: var(--c-text-secondary); /* Couleur flèche via currentColor */
+    color: var(--c-text-secondary);
     transition: border-color var(--transition), color var(--transition);
 }
 select#time-unit:hover { color: var(--c-text-primary); }
-
-/* --- AMÉLIORATION Dropdown Options --- */
-/* Style basique pour les options, peut être limité par l'OS/Navigateur */
-select#time-unit option {
-    background-color: var(--c-select-option-bg);
-    color: var(--c-select-option-text);
-}
-/* Style au survol (peut ne pas marcher partout) */
-select#time-unit option:hover,
-select#time-unit option:checked { /* Pour l'option sélectionnée dans la liste ouverte */
-    background-color: var(--c-primary);
-    color: white;
-}
-
+select#time-unit option { background-color: var(--c-select-option-bg); color: var(--c-select-option-text); }
 
 /* --- Boutons et Statut --- */
 .button-group { display: flex; gap: 0.75rem; }
-button { flex-grow: 1; font-size: 0.95rem; font-weight: 500; padding: 0.8rem; /* Ajusté */ border: none; border-radius: 10px; cursor: pointer; transition: var(--transition); }
+button { 
+    flex-grow: 1; font-size: 0.95rem; font-weight: 500; 
+    padding: 0.8rem; border: none; border-radius: 10px; 
+    cursor: pointer; transition: var(--transition); 
+}
 button:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
 
 .validate { background-color: var(--c-primary); color: white; }
 .validate:hover:not(:disabled) { background-color: var(--c-primary-hover); }
+
 .cancel { background-color: transparent; color: var(--c-text-secondary); border: 1px solid var(--c-border); }
 .cancel:hover:not(:disabled) { background-color: var(--c-input-bg-hover); color: var(--c-danger); border-color: var(--c-danger); }
 
 /* États désactivés */
-button:disabled { background-color: var(--c-disabled-bg); color: var(--c-disabled-text); cursor: not-allowed; transform: none; border: none; }
-button.cancel:disabled { background-color: var(--c-disabled-bg); color: var(--c-disabled-text); border: 1px solid transparent; }
+button:disabled { background-color: var(--c-disabled-bg); color: var(--c-disabled-text); cursor: not-allowed; border: none; }
+button.cancel:disabled { border: 1px solid transparent; }
 
-
-input:disabled, select:disabled { background-color: transparent; color: var(--c-disabled-text); cursor: not-allowed; border-color: transparent; }
+input:disabled, select:disabled { 
+    background-color: transparent; color: var(--c-disabled-text); 
+    cursor: not-allowed; border-color: transparent; 
+}
 #time-input-group:has(input:disabled) {
     background-color: var(--c-disabled-bg);
     border-color: var(--c-border);
     opacity: 0.7;
 }
 input[type="number"]:disabled { color: var(--c-disabled-text); }
-select#time-unit:disabled {
-    color: var(--c-disabled-text); /* Couleur flèche désactivée */
-    border-left-color: var(--c-border);
-}
-
+select#time-unit:disabled { color: var(--c-disabled-text); border-left-color: var(--c-border); }
 
 #status {
     font-size: 0.9rem; font-weight: 400; margin-top: 1.5rem;
